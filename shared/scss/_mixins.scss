@@ -1,5 +1,4 @@
 @import "vars";
-@import "tracker-network-icons";
 
 /* Logo */
 @mixin ddg_logo () {
@@ -225,8 +224,8 @@
 }
 
 @mixin arrow-left($size, $color) {
-    width: 0; 
-    height: 0; 
+    width: 0;
+    height: 0;
     border-top: $size solid transparent;
     border-bottom: $size solid transparent;
     border-right: $size solid $color;

@@ -14,23 +14,11 @@
  *          }
  *      }
  */
-const gradeIconLocations = {
-    A: '/img/toolbar-rating-a_48.png',
-    'B+': '/img/toolbar-rating-b-plus_48.png',
-    B: '/img/toolbar-rating-b_48.png',
-    'C+': '/img/toolbar-rating-c-plus_48.png',
-    C: '/img/toolbar-rating-c_48.png',
-    D: '/img/toolbar-rating-d_48.png',
-    // we don't currently show the D- grade
-    'D-': '/img/toolbar-rating-d_48.png',
-    F: '/img/toolbar-rating-f_48.png'
-}
 
 const Site = require('./site.es6')
 const Tracker = require('./tracker.es6')
 const HttpsRedirects = require('./https-redirects.es6')
 const Companies = require('../companies.es6')
-const browserWrapper = require('./../wrapper.es6')
 const webResourceKeyRegex = /.*\?key=(.*)/
 
 class Tab {
@@ -60,46 +48,15 @@ class Tab {
         }
 
         this.httpsRedirects = new HttpsRedirects()
-        this.statusCode = null // statusCode is set when headers are recieved in tabManager.js
+        this.statusCode = null // statusCode is set when headers are received in tabManager.js
         this.stopwatch = {
             begin: Date.now(),
             end: null,
             completeMs: null
         }
-
-        // Set the default extension icon for the new tab, assuming it's really
-        // a tab (e.g. not a ServiceWorker).
-        if (this.id !== -1) {
-            this.resetBadgeIcon()
-        }
-
         this.webResourceAccess = []
         this.surrogates = {}
     };
-
-    resetBadgeIcon () {
-        // set the new tab icon to the dax logo
-        browserWrapper.setBadgeIcon({ path: '/img/icon_48.png', tabId: this.id })
-    }
-
-    updateBadgeIcon (target) {
-        if (this.site.specialDomainName) return
-        let gradeIcon
-        const grade = this.site.grade.get()
-
-        if (this.site.isContentBlockingEnabled()) {
-            // @ts-ignore
-            gradeIcon = gradeIconLocations[grade.enhanced.grade]
-        } else {
-            // @ts-ignore
-            gradeIcon = gradeIconLocations[grade.site.grade]
-        }
-
-        const badgeData = { path: gradeIcon, tabId: this.id }
-        if (target) badgeData.target = target
-
-        browserWrapper.setBadgeIcon(badgeData)
-    }
 
     updateSite (url) {
         if (this.site.url === url) return
@@ -108,7 +65,6 @@ class Tab {
         this.site = new Site(url)
 
         // reset badge to dax whenever we go to a new site
-        this.resetBadgeIcon()
     };
 
     // Store all trackers for a given tab even if we don't block them.
